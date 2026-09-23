@@ -17,7 +17,8 @@ export const MISSION = {
 };
 
 // Real mission timepoints as defined by OSDR/TRISH sample collection schedule.
-// L = days before Launch, R = days after Return.
+// L = days before Launch, R = days after Return. Confirmed against actual
+// OSD-569 sample sheet (s_OSD-569.txt) -- 7 timepoints, not 6.
 export const TIMEPOINTS = [
   { id: "L-92", label: "L-92", phase: "pre-flight", daysFromLaunch: -92 },
   { id: "L-44", label: "L-44", phase: "pre-flight", daysFromLaunch: -44 },
@@ -25,12 +26,25 @@ export const TIMEPOINTS = [
   { id: "R+1", label: "R+1", phase: "post-flight", daysFromLaunch: 4 },
   { id: "R+45", label: "R+45", phase: "post-flight", daysFromLaunch: 48 },
   { id: "R+82", label: "R+82", phase: "post-flight", daysFromLaunch: 85 },
+  { id: "R+194", label: "R+194", phase: "post-flight", daysFromLaunch: 197 },
 ];
 
-// Real crew members of Inspiration4 (public figures, public mission).
+// NASA OSDR anonymizes Inspiration4 subjects as C001-C004 in the actual data
+// files (see s_OSD-569.txt). We deliberately do NOT map these to individual
+// crew member names ourselves, since OSDR does not publish that mapping and
+// we won't invent one. Crew names are shown only as mission-level context.
 export const CREW = [
-  { id: "isaacman", name: "Jared Isaacman", role: "Commander" },
-  { id: "proctor", name: "Sian Proctor", role: "Pilot" },
-  { id: "arceneaux", name: "Hayley Arceneaux", role: "Medical Officer" },
-  { id: "sembroski", name: "Chris Sembroski", role: "Mission Specialist" },
+  { id: "C001", name: "Subject C001", role: "Inspiration4 Crew" },
+  { id: "C002", name: "Subject C002", role: "Inspiration4 Crew" },
+  { id: "C003", name: "Subject C003", role: "Inspiration4 Crew" },
+  { id: "C004", name: "Subject C004", role: "Inspiration4 Crew" },
+];
+
+// The four named Inspiration4 crew members, shown as mission-level context
+// only (About page) -- not linked to individual subject codes above.
+export const CREW_MISSION_CONTEXT = [
+  "Jared Isaacman (Commander)",
+  "Sian Proctor (Pilot)",
+  "Hayley Arceneaux (Medical Officer)",
+  "Chris Sembroski (Mission Specialist)",
 ];

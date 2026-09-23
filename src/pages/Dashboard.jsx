@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { ChevronRight, AlertTriangle, Eye, CheckCircle2 } from "lucide-react";
 import { CREW, MISSION } from "../data/mission";
-import { PLACEHOLDER_READINGS } from "../data/readings.placeholder";
+import { REAL_READINGS } from "../data/readings.real";
 import { buildFlaggedReadings } from "../lib/flagging";
 import { crewSummary, STATUS_LABEL } from "../lib/crewStatus";
 
-const flagged = buildFlaggedReadings(PLACEHOLDER_READINGS);
+const flagged = buildFlaggedReadings(REAL_READINGS);
 
 const STATUS_ICON = { normal: CheckCircle2, watch: Eye, flagged: AlertTriangle };
 const BORDER_CLASS = {

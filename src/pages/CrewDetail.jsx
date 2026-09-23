@@ -13,10 +13,10 @@ import {
 } from "recharts";
 import { CREW, TIMEPOINTS } from "../data/mission";
 import { METRICS } from "../data/metrics";
-import { PLACEHOLDER_READINGS } from "../data/readings.placeholder";
+import { REAL_READINGS } from "../data/readings.real";
 import { buildFlaggedReadings } from "../lib/flagging";
 
-const flagged = buildFlaggedReadings(PLACEHOLDER_READINGS);
+const flagged = buildFlaggedReadings(REAL_READINGS);
 
 const SEVERITY_DOT = {
   normal: "bg-status-normal",
@@ -37,6 +37,8 @@ export default function CrewDetail() {
     const row = metricRows.find((r) => r.timepointId === tp.id);
     return { timepoint: tp.label, phase: tp.phase, value: row?.value ?? null, row };
   });
+  const sampleRow = metricRows[0];
+  const hasRange = activeMetric.hasClinicalRange && sampleRow;
 
   const flaggedForCrew = flagged.filter((r) => r.crewId === crewId && r.severity !== "normal");
 
@@ -83,8 +85,8 @@ export default function CrewDetail() {
               <CartesianGrid stroke="#2A3348" strokeDasharray="3 3" vertical={false} />
               <XAxis dataKey="timepoint" tick={{ fill: "#8891A6", fontSize: 12 }} axisLine={{ stroke: "#2A3348" }} tickLine={false} />
               <YAxis tick={{ fill: "#8891A6", fontSize: 12 }} axisLine={{ stroke: "#2A3348" }} tickLine={false} width={40} />
-              <ReferenceLine y={activeMetric.normalRange[0]} stroke="#5A6379" strokeDasharray="2 4" />
-              <ReferenceLine y={activeMetric.normalRange[1]} stroke="#5A6379" strokeDasharray="2 4" />
+              {hasRange && <ReferenceLine y={sampleRow.rangeMin} stroke="#5A6379" strokeDasharray="2 4" />}
+              {hasRange && <ReferenceLine y={sampleRow.rangeMax} stroke="#5A6379" strokeDasharray="2 4" />}
               <Tooltip
                 contentStyle={{ background: "#1B2338", border: "1px solid #2A3348", borderRadius: 0, fontSize: 12 }}
                 labelStyle={{ color: "#E7EAF0" }}
@@ -100,7 +102,9 @@ export default function CrewDetail() {
             </LineChart>
           </ResponsiveContainer>
           <div className="text-xs text-faint mt-1">
-            Dashed lines mark the standard clinical reference range ({activeMetric.normalRange[0]}&ndash;{activeMetric.normalRange[1]} {activeMetric.unit}).
+            {hasRange
+              ? `Dashed lines mark the Quest Diagnostics reference range for this draw (${sampleRow.rangeMin}\u2013${sampleRow.rangeMax} ${activeMetric.unit}).`
+              : "No established clinical reference range for this research-use marker \u2014 assessed by deviation from baseline only."}
           </div>
         </div>
 
@@ -113,6 +117,9 @@ export default function CrewDetail() {
                 <div className="flex items-center gap-2">
                   <span className={`w-1.5 h-1.5 rounded-full ${SEVERITY_DOT[d.row?.severity ?? "normal"]}`} />
                   <span className="text-muted tabular text-xs">{d.timepoint}</span>
+                  {d.row?.dataNote && (
+                    <span title={d.row.dataNote} className="text-status-watch text-xs cursor-help">&#9888;</span>
+                  )}
                 </div>
                 <span className="tabular text-ink">{d.value ?? "\u2014"}</span>
               </div>

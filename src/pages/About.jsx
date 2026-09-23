@@ -1,5 +1,4 @@
-import { MISSION } from "../data/mission";
-import { IS_PLACEHOLDER } from "../data/readings.placeholder";
+import { MISSION, CREW_MISSION_CONTEXT } from "../data/mission";
 
 export default function About() {
   return (
@@ -18,11 +17,22 @@ export default function About() {
         </p>
 
         <div>
+          <div className="text-ink font-medium mb-1.5">On subject anonymization</div>
+          <p>
+            NASA OSDR identifies subjects as C001&ndash;C004 in the actual data files,
+            without publishing which code corresponds to which named crew member. This app
+            keeps that anonymization rather than guessing &mdash; the four Inspiration4
+            crew members were {CREW_MISSION_CONTEXT.join(", ")}, shown here only as mission
+            context, not linked to individual data.
+          </p>
+        </div>
+
+        <div>
           <div className="text-ink font-medium mb-1.5">Timepoints</div>
           <p>
-            Readings are anchored to six real mission-phase sample collection points: L-92,
-            L-44, L-3 (pre-flight) and R+1, R+45, R+82 (post-flight), where L/R count days
-            before Launch and after Return.
+            Readings are anchored to seven real mission-phase sample collection points: L-92,
+            L-44, L-3 (pre-flight) and R+1, R+45, R+82, R+194 (post-flight), where L/R count
+            days before Launch and after Return.
           </p>
         </div>
 
@@ -48,14 +58,31 @@ export default function About() {
           </ul>
         </div>
 
-        {IS_PLACEHOLDER && (
-          <div className="border border-status-watch/40 bg-status-watch/10 p-4 text-status-watch text-sm">
-            The app is currently showing <strong>synthetic placeholder values</strong>, not real
-            astronaut biomarker readings. Real values from the OSDR studies above have not yet
-            been loaded. This banner and the top-of-app notice will disappear once real data
-            replaces the placeholder file.
-          </div>
-        )}
+        <div>
+          <div className="text-ink font-medium mb-1.5">Metrics tracked</div>
+          <p>
+            White Blood Cell Count, Absolute Lymphocytes, Hemoglobin, and Platelet Count
+            (Quest Diagnostics CBC, OSD-569); Glucose and Sodium (Quest Diagnostics
+            Comprehensive Metabolic Panel, OSD-575); and Interleukin-6 (Eve Technologies HD71
+            cytokine panel, OSD-575). All seven are real, published values &mdash; not
+            simulated.
+          </p>
+        </div>
+
+        <div className="border border-status-normal/40 bg-status-normal/10 p-4 text-status-normal text-sm">
+          This app is currently showing <strong>168 real readings</strong> across 4 subjects,
+          7 timepoints, and 6 biomarkers, parsed directly from the OSDR CSV exports linked
+          above. No values are simulated or estimated.
+        </div>
+
+        <div>
+          <div className="text-ink font-medium mb-1.5">Known limitation</div>
+          <p>
+            With only 4 subjects and a 3-day mission, this is a small sample for statistical
+            purposes. Flags here are a rule-based decision-support signal to guide a ground
+            reviewer&apos;s attention &mdash; not a validated clinical or statistical finding.
+          </p>
+        </div>
       </div>
     </div>
   );

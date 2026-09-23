@@ -3,7 +3,6 @@ import { Activity, Radio, Info } from "lucide-react";
 import Dashboard from "./pages/Dashboard";
 import CrewDetail from "./pages/CrewDetail";
 import About from "./pages/About";
-import { IS_PLACEHOLDER } from "./data/readings.placeholder";
 import { MISSION } from "./data/mission";
 
 function NavItem({ to, icon: Icon, label, end }) {
@@ -48,11 +47,9 @@ export default function App() {
         </aside>
 
         <div className="flex-1 flex flex-col min-w-0">
-          {IS_PLACEHOLDER && (
-            <div className="bg-status-watch/15 border-b border-status-watch/40 text-status-watch text-xs px-4 py-1.5 text-center">
-              Sample data &mdash; illustrating the interface. Not real astronaut values. See About This Data.
-            </div>
-          )}
+          <div className="bg-status-normal/10 border-b border-status-normal/30 text-status-normal text-xs px-4 py-1.5 text-center">
+            Real NASA OSDR data &middot; Inspiration4 mission (OSD-569, OSD-575) &middot; see About This Data
+          </div>
           <main className="flex-1 overflow-y-auto">
             <Routes>
               <Route path="/" element={<Dashboard />} />
