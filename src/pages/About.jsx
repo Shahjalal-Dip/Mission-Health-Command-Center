@@ -3,7 +3,7 @@ import { MISSION, CREW_MISSION_CONTEXT } from "../data/mission";
 export default function About() {
   return (
     <div className="px-8 py-7 max-w-2xl">
-      <h1 className="text-2xl font-semibold text-ink mb-5">About This Data</h1>
+      <h1 className="text-[26px] font-display font-semibold text-ink mb-5">About This Data</h1>
 
       <div className="space-y-5 text-sm text-muted leading-relaxed">
         <p>
@@ -17,7 +17,7 @@ export default function About() {
         </p>
 
         <div>
-          <div className="text-ink font-medium mb-1.5">On subject anonymization</div>
+          <div className="text-ink font-display font-semibold mb-1.5">On subject anonymization</div>
           <p>
             NASA OSDR identifies subjects as C001&ndash;C004 in the actual data files,
             without publishing which code corresponds to which named crew member. This app
@@ -28,7 +28,7 @@ export default function About() {
         </div>
 
         <div>
-          <div className="text-ink font-medium mb-1.5">Timepoints</div>
+          <div className="text-ink font-display font-semibold mb-1.5">Timepoints</div>
           <p>
             Readings are anchored to seven real mission-phase sample collection points: L-92,
             L-44, L-3 (pre-flight) and R+1, R+45, R+82, R+194 (post-flight), where L/R count
@@ -37,7 +37,7 @@ export default function About() {
         </div>
 
         <div>
-          <div className="text-ink font-medium mb-1.5">How flags work</div>
+          <div className="text-ink font-display font-semibold mb-1.5">How flags work</div>
           <p>
             Each reading is compared against that crew member&apos;s own average pre-flight
             value. A deviation of 20%+ is marked &ldquo;watch,&rdquo; 35%+ is marked
@@ -48,7 +48,7 @@ export default function About() {
         </div>
 
         <div>
-          <div className="text-ink font-medium mb-1.5">Source studies</div>
+          <div className="text-ink font-display font-semibold mb-1.5">Source studies</div>
           <ul className="space-y-1">
             {MISSION.osdStudies.map((s) => (
               <li key={s.id} className="tabular text-xs">
@@ -59,7 +59,7 @@ export default function About() {
         </div>
 
         <div>
-          <div className="text-ink font-medium mb-1.5">Metrics tracked</div>
+          <div className="text-ink font-display font-semibold mb-1.5">Metrics tracked</div>
           <p>
             White Blood Cell Count, Absolute Lymphocytes, Hemoglobin, and Platelet Count
             (Quest Diagnostics CBC, OSD-569); Glucose and Sodium (Quest Diagnostics
@@ -76,7 +76,7 @@ export default function About() {
         </div>
 
         <div>
-          <div className="text-ink font-medium mb-1.5">Known limitation</div>
+          <div className="text-ink font-display font-semibold mb-1.5">Known limitation</div>
           <p>
             With only 4 subjects and a 3-day mission, this is a small sample for statistical
             purposes. Flags here are a rule-based decision-support signal to guide a ground

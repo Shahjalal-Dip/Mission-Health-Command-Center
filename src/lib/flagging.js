@@ -1,6 +1,6 @@
 import { METRIC_MAP } from "../data/metrics";
 import { TIMEPOINTS } from "../data/mission";
-import { getDataNote } from "../data/dataNotes";
+import { getDataNote, isExcludedFromBaseline } from "../data/dataNotes";
 
 // Flags a reading based on TWO signals, both explainable in plain language:
 //  1. Deviation from this crew member's own pre-flight baseline (average of
@@ -22,6 +22,7 @@ export function computeBaselines(readings) {
   const baselines = {};
   readings.forEach((r) => {
     if (!PRE_FLIGHT_IDS.includes(r.timepointId)) return;
+    if (isExcludedFromBaseline(r.crewId, r.metricId, r.timepointId)) return;
     baselines[r.crewId] ??= {};
     baselines[r.crewId][r.metricId] ??= [];
     baselines[r.crewId][r.metricId].push(r.value);

@@ -24,6 +24,13 @@ const SEVERITY_DOT = {
   flagged: "bg-status-flagged",
 };
 
+const CATEGORY_COLOR = {
+  Immune: "text-accent-2 bg-accent-2/10 border-accent-2/30",
+  Hematology: "text-accent-2 bg-accent-2/10 border-accent-2/30",
+  Metabolic: "text-accent bg-accent/10 border-accent/30",
+  Inflammation: "text-status-flagged bg-status-flagged/10 border-status-flagged/30",
+};
+
 export default function CrewDetail() {
   const { crewId } = useParams();
   const member = CREW.find((c) => c.id === crewId);
@@ -44,59 +51,65 @@ export default function CrewDetail() {
 
   return (
     <div className="px-8 py-7 max-w-5xl">
-      <Link to="/" className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-ink mb-5">
+      <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-accent transition-colors mb-5">
         <ArrowLeft size={14} /> Crew Overview
       </Link>
 
-      <div className="flex items-baseline justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-semibold text-ink">{member.name}</h1>
-          <div className="text-sm text-muted">{member.role}</div>
-        </div>
+      <div className="flex items-baseline gap-3 mb-6">
+        <h1 className="text-[28px] font-display font-semibold text-ink tabular tracking-wide">{member.id}</h1>
+        <span className="text-xs text-faint clip-tag bg-panel-raised border border-line px-2.5 py-1">{member.role}</span>
       </div>
 
-      {/* Metric selector */}
-      <div className="flex gap-1 border-b border-line mb-5">
-        {METRICS.map((m) => (
-          <button
-            key={m.id}
-            onClick={() => setActiveMetricId(m.id)}
-            className={`px-3.5 py-2.5 text-sm border-b-2 -mb-px transition-colors ${
-              m.id === activeMetricId
-                ? "border-accent text-ink"
-                : "border-transparent text-muted hover:text-ink"
-            }`}
-          >
-            {m.shortName}
-          </button>
-        ))}
+      {/* Metric selector - clipped-corner chips, color-coded by category */}
+      <div className="flex flex-wrap gap-2 mb-5">
+        {METRICS.map((m) => {
+          const active = m.id === activeMetricId;
+          return (
+            <button
+              key={m.id}
+              onClick={() => setActiveMetricId(m.id)}
+              className={`clip-tag px-3.5 py-2 text-xs font-medium border transition-colors ${
+                active
+                  ? "bg-accent/15 border-accent text-accent"
+                  : "bg-panel border-line text-muted hover:text-ink hover:border-line-bright"
+              }`}
+            >
+              {m.shortName}
+            </button>
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-3 gap-6">
         {/* Chart */}
-        <div className="col-span-2 bg-panel border border-line p-5">
+        <div className="bracket col-span-2 bg-panel border border-line p-5">
           <div className="flex items-baseline justify-between mb-1">
-            <div className="text-sm font-medium text-ink">{activeMetric.name}</div>
-            <div className="text-xs text-faint">{activeMetric.unit}</div>
+            <div className="flex items-center gap-2">
+              <div className="text-sm font-display font-semibold text-ink">{activeMetric.name}</div>
+              <span className={`clip-tag text-[10px] px-1.5 py-0.5 border ${CATEGORY_COLOR[activeMetric.category] ?? ""}`}>
+                {activeMetric.category}
+              </span>
+            </div>
+            <div className="text-xs text-faint tabular">{activeMetric.unit}</div>
           </div>
           <div className="text-xs text-muted mb-4 leading-relaxed">{activeMetric.description}</div>
           <ResponsiveContainer width="100%" height={260}>
             <LineChart data={chartData} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
-              <CartesianGrid stroke="#2A3348" strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="timepoint" tick={{ fill: "#8891A6", fontSize: 12 }} axisLine={{ stroke: "#2A3348" }} tickLine={false} />
-              <YAxis tick={{ fill: "#8891A6", fontSize: 12 }} axisLine={{ stroke: "#2A3348" }} tickLine={false} width={40} />
-              {hasRange && <ReferenceLine y={sampleRow.rangeMin} stroke="#5A6379" strokeDasharray="2 4" />}
-              {hasRange && <ReferenceLine y={sampleRow.rangeMax} stroke="#5A6379" strokeDasharray="2 4" />}
+              <CartesianGrid stroke="#263153" strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="timepoint" tick={{ fill: "#8b96b3", fontSize: 12, fontFamily: "IBM Plex Mono" }} axisLine={{ stroke: "#263153" }} tickLine={false} />
+              <YAxis tick={{ fill: "#8b96b3", fontSize: 12, fontFamily: "IBM Plex Mono" }} axisLine={{ stroke: "#263153" }} tickLine={false} width={40} />
+              {hasRange && <ReferenceLine y={sampleRow.rangeMin} stroke="#566089" strokeDasharray="2 4" />}
+              {hasRange && <ReferenceLine y={sampleRow.rangeMax} stroke="#566089" strokeDasharray="2 4" />}
               <Tooltip
-                contentStyle={{ background: "#1B2338", border: "1px solid #2A3348", borderRadius: 0, fontSize: 12 }}
-                labelStyle={{ color: "#E7EAF0" }}
+                contentStyle={{ background: "#182036", border: "1px solid #3a4872", borderRadius: 0, fontSize: 12, fontFamily: "IBM Plex Mono" }}
+                labelStyle={{ color: "#eef1f7" }}
               />
               <Line
                 type="monotone"
                 dataKey="value"
-                stroke="#E8A33D"
+                stroke="#e8a33d"
                 strokeWidth={2}
-                dot={{ r: 4, fill: "#0E1420", stroke: "#E8A33D", strokeWidth: 2 }}
+                dot={{ r: 4, fill: "#0a0f1a", stroke: "#e8a33d", strokeWidth: 2 }}
                 activeDot={{ r: 5 }}
               />
             </LineChart>
@@ -109,8 +122,8 @@ export default function CrewDetail() {
         </div>
 
         {/* Timepoint readout + flags */}
-        <div className="bg-panel border border-line p-5">
-          <div className="text-sm font-medium text-ink mb-3">Readings by timepoint</div>
+        <div className="bracket bg-panel border border-line p-5">
+          <div className="text-[10px] tracking-widest text-faint uppercase font-display mb-3">Readings by Timepoint</div>
           <div className="space-y-2">
             {chartData.map((d) => (
               <div key={d.timepoint} className="flex items-center justify-between text-sm">
@@ -130,8 +143,8 @@ export default function CrewDetail() {
 
       {/* Flag explanations */}
       <div className="mt-6">
-        <div className="text-sm font-medium text-ink mb-3">
-          Flags for {member.name} ({flaggedForCrew.length})
+        <div className="text-[10px] tracking-widest text-faint uppercase font-display mb-3">
+          Flags for {member.id} ({flaggedForCrew.length})
         </div>
         {flaggedForCrew.length === 0 ? (
           <div className="text-sm text-muted">No deviations flagged across tracked biomarkers.</div>

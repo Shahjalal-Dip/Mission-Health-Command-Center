@@ -23,10 +23,10 @@ export const TIMEPOINTS = [
   { id: "L-92", label: "L-92", phase: "pre-flight", daysFromLaunch: -92 },
   { id: "L-44", label: "L-44", phase: "pre-flight", daysFromLaunch: -44 },
   { id: "L-3", label: "L-3", phase: "pre-flight", daysFromLaunch: -3 },
-  { id: "R+1", label: "R+1", phase: "post-flight", daysFromLaunch: 4 },
-  { id: "R+45", label: "R+45", phase: "post-flight", daysFromLaunch: 48 },
-  { id: "R+82", label: "R+82", phase: "post-flight", daysFromLaunch: 85 },
-  { id: "R+194", label: "R+194", phase: "post-flight", daysFromLaunch: 197 },
+  { id: "R+1", label: "R+1", phase: "post-flight", daysFromLaunch: 4, daysPostReturn: 1 },
+  { id: "R+45", label: "R+45", phase: "post-flight", daysFromLaunch: 48, daysPostReturn: 45 },
+  { id: "R+82", label: "R+82", phase: "post-flight", daysFromLaunch: 85, daysPostReturn: 82 },
+  { id: "R+194", label: "R+194", phase: "post-flight", daysFromLaunch: 197, daysPostReturn: 194 },
 ];
 
 // NASA OSDR anonymizes Inspiration4 subjects as C001-C004 in the actual data
