@@ -73,10 +73,13 @@ export default function Insights() {
           ))}
         </div>
         <p className="text-xs text-faint mt-3 max-w-2xl leading-relaxed">
-          Note the pattern: metabolic markers (Glucose, Sodium) normalized quickly and
-          consistently across all subjects, while immune markers (Lymphocytes, IL-6) recovered
-          more slowly and inconsistently &mdash; consistent with published spaceflight immunology
-          findings about longer-lasting immune system changes post-flight.
+          <strong className="text-ink">Observed in this dataset:</strong> metabolic markers
+          (Glucose, Sodium) reached the recovery threshold earlier and more consistently across
+          subjects, while immune markers (Lymphocytes, IL-6) took longer and were less
+          consistent. This pattern is descriptive of these 4 subjects and should not be
+          generalized to spaceflight recovery broadly &mdash; though it is directionally
+          consistent with published spaceflight immunology research on longer-lasting immune
+          changes post-flight.
         </p>
       </section>
 

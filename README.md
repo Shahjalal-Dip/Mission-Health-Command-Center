@@ -34,9 +34,9 @@ Mission Health Command Center replays real astronaut biomarker data on a mission
 | NASA OSDR | [OSD-575](https://osdr.nasa.gov/bio/repo/data/studies/OSD-575) | Comprehensive Metabolic Panel + cytokine multiplex panel |
 | NASA HRP | [Bone Fracture Risk evidence report](https://ntrs.nasa.gov/api/citations/20170004597/downloads/20170004597.pdf) | Literature context only (Insights page) |
 
-All data is from the SpaceX **Inspiration4** mission — the first orbital spaceflight crewed entirely by civilians, and the first mission with publicly released human biological data from a commercial spaceflight. Subjects are anonymized as C001–C004 exactly as NASA published them; we deliberately did not attempt to map codes to named crew members, since NASA does not publish that mapping.
+All data is from the SpaceX **Inspiration4** mission — the first orbital spaceflight crewed entirely by civilians. NASA's Open Science Data Repository publicly hosts biological datasets from this mission. Subjects are anonymized as C001–C004 exactly as NASA published them; we deliberately did not attempt to map codes to named crew members, since NASA does not publish that mapping.
 
-**168 real readings** across 4 subjects × 7 timepoints × 6 biomarkers. Zero simulated values.
+**196 real readings** across 4 subjects × 7 timepoints × 7 biomarkers — a complete grid, no gaps. Zero simulated values.
 
 ## Why this approach
 
@@ -48,7 +48,7 @@ We also found and transparently handled a real data-quality issue: one biomarker
 
 - React + Tailwind CSS v4 (Vite)
 - Recharts for data visualization
-- No backend, no database — the real dataset (168 readings) is small enough that a one-time ETL into a static JSON/JS module is simpler and more reliable for a demo than standing up live infrastructure
+- No backend, no database — the real dataset (196 readings) is small enough that a one-time ETL into a static JSON/JS module is simpler and more reliable for a demo than standing up live infrastructure
 - ETL: a one-time Python script (`/etl/build_readings.py`, see below) parses the raw OSDR CSV exports into the app's data shape
 
 ## Running locally

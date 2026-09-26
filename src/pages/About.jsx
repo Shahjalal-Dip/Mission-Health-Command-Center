@@ -1,4 +1,9 @@
 import { MISSION, CREW_MISSION_CONTEXT } from "../data/mission";
+import { REAL_READINGS } from "../data/readings.real";
+
+const subjectCount = new Set(REAL_READINGS.map((r) => r.crewId)).size;
+const timepointCount = new Set(REAL_READINGS.map((r) => r.timepointId)).size;
+const metricCount = new Set(REAL_READINGS.map((r) => r.metricId)).size;
 
 export default function About() {
   return (
@@ -12,8 +17,8 @@ export default function About() {
             Open Science Data Repository (OSDR)
           </a>
           , specifically the SpaceX Inspiration4 (I4) mission &mdash; the first orbital
-          spaceflight crewed entirely by civilians, and the first mission with publicly
-          released human biological data from a commercial spaceflight.
+          spaceflight crewed entirely by civilians. NASA&apos;s OSDR publicly hosts biological
+          datasets from this mission, including the biomarker data shown throughout this app.
         </p>
 
         <div>
@@ -70,9 +75,12 @@ export default function About() {
         </div>
 
         <div className="border border-status-normal/40 bg-status-normal/10 p-4 text-status-normal text-sm">
-          This app is currently showing <strong>168 real readings</strong> across 4 subjects,
-          7 timepoints, and 6 biomarkers, parsed directly from the OSDR CSV exports linked
-          above. No values are simulated or estimated.
+          This app is currently showing <strong>{REAL_READINGS.length} real readings</strong> across{" "}
+          {subjectCount} subjects, {timepointCount} timepoints, and {metricCount} biomarkers
+          ({subjectCount} &times; {timepointCount} &times; {metricCount} = {subjectCount * timepointCount * metricCount}),
+          parsed directly from the OSDR CSV exports linked above. No values are simulated or
+          estimated. These counts are computed from the underlying dataset, not hardcoded, so
+          they can&apos;t drift out of sync if the data changes.
         </div>
 
         <div>

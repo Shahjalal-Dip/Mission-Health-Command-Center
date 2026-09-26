@@ -51,7 +51,7 @@ function AppShell({ children }) {
         <nav className="flex-1 py-3">
           <NavItem to="/dashboard" icon={Activity} label="Crew Overview" />
           <NavItem to="/insights" icon={TrendingUp} label="Insights" />
-          <NavItem to="/about" icon={Info} label="About This Data" />
+          <NavItem to="/about" icon={Info} label="Data & Methods" />
         </nav>
         <div className="px-4 py-3 border-t border-line text-[11px] text-faint space-y-1">
           <div className="flex justify-between tabular">
