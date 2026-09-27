@@ -17,8 +17,9 @@ export default function MissionTimeline({ highlightId }) {
           Launch {MISSION.launchDate}
         </span>
       </div>
-      <div className="relative flex items-center">
-        <div className="absolute left-0 right-0 h-px bg-line-bright" />
+      <div className="overflow-x-auto -mx-1 px-1">
+        <div className="relative flex items-center min-w-[520px]">
+          <div className="absolute left-0 right-0 h-px bg-line-bright" />
         {TIMEPOINTS.map((tp, i) => (
           <div key={tp.id} className="relative flex-1 flex flex-col items-center">
             {tp.id === highlightId && (
@@ -46,6 +47,7 @@ export default function MissionTimeline({ highlightId }) {
             </span>
           </div>
         ))}
+        </div>
       </div>
     </motion.div>
   );

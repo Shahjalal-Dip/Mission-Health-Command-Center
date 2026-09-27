@@ -50,7 +50,7 @@ function RecoveryBar({ row, rowIndex }) {
 
 export default function Insights() {
   return (
-    <div className="px-8 py-7 max-w-4xl">
+    <div className="px-4 sm:px-6 md:px-8 py-5 md:py-7 max-w-4xl">
       <h1 className="text-[26px] font-display font-semibold text-ink mb-1.5">Insights</h1>
       <p className="text-sm text-muted mb-8 max-w-2xl leading-relaxed">
         Two views: how the real Inspiration4 crew biomarkers actually recovered post-flight, and
@@ -94,7 +94,7 @@ export default function Insights() {
           <span className="text-xs text-accent bg-accent/10 px-1.5 py-0.5">published research</span>
         </div>
         <p className="text-xs text-muted mb-5 max-w-2xl leading-relaxed">{CONTEXT_DISCLAIMER}</p>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {MISSION_DURATION_CONTEXT.map((c, i) => (
             <motion.div
               key={c.id}

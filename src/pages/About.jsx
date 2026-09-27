@@ -13,7 +13,7 @@ const item = {
 
 export default function About() {
   return (
-    <div className="px-8 py-7 max-w-2xl">
+    <div className="px-4 sm:px-6 md:px-8 py-5 md:py-7 max-w-2xl">
       <motion.h1
         initial={{ opacity: 0, y: -8 }}
         animate={{ opacity: 1, y: 0 }}

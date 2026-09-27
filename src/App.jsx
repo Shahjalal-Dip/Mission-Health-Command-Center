@@ -1,6 +1,7 @@
+import { useState, useEffect } from "react";
 import { HashRouter, Routes, Route, NavLink, Link, useLocation, useOutlet } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { Activity, Info, TrendingUp } from "lucide-react";
+import { Activity, Info, TrendingUp, Menu, X } from "lucide-react";
 import Briefing from "./pages/Briefing";
 import Dashboard from "./pages/Dashboard";
 import CrewDetail from "./pages/CrewDetail";
@@ -28,13 +29,14 @@ function Insignia({ animated = false }) {
   );
 }
 
-function NavItem({ to, icon: Icon, label, end }) {
+function NavItem({ to, icon: Icon, label, end, onClick }) {
   return (
     <NavLink
       to={to}
       end={end}
+      onClick={onClick}
       className={({ isActive }) =>
-        `flex items-center gap-2.5 px-4 py-2.5 text-sm border-l-2 transition-all duration-200 ${
+        `flex items-center gap-2.5 px-4 py-3 md:py-2.5 text-sm border-l-2 transition-all duration-200 ${
           isActive
             ? "border-accent text-ink bg-panel-raised"
             : "border-transparent text-muted hover:text-ink hover:bg-panel-raised/50 hover:border-line-bright"
@@ -50,51 +52,109 @@ function NavItem({ to, icon: Icon, label, end }) {
 function AppShell() {
   const location = useLocation();
   const outlet = useOutlet();
+  const [navOpen, setNavOpen] = useState(false);
+
+  useEffect(() => {
+    setNavOpen(false);
+  }, [location.pathname]);
+
+  const sidebarContent = (
+    <>
+      <Link to="/" className="px-4 py-4 border-b border-line flex items-center gap-2.5 hover:bg-panel-raised/50 transition-colors">
+        <Insignia />
+        <div>
+          <div className="text-[10px] tracking-widest text-faint uppercase font-display">Mission Health</div>
+          <div className="text-[15px] font-display font-semibold text-ink leading-tight">Command Center</div>
+        </div>
+      </Link>
+      <nav className="flex-1 py-3">
+        <NavItem to="/dashboard" icon={Activity} label="Crew Overview" onClick={() => setNavOpen(false)} />
+        <NavItem to="/insights" icon={TrendingUp} label="Insights" onClick={() => setNavOpen(false)} />
+        <NavItem to="/about" icon={Info} label="Data & Methods" onClick={() => setNavOpen(false)} />
+      </nav>
+      <div className="px-4 py-3 border-t border-line text-[11px] text-faint space-y-1">
+        <div className="flex justify-between tabular">
+          <span className="text-muted">MISSION</span>
+          <span className="text-ink">{MISSION.name.replace("SpaceX ", "")}</span>
+        </div>
+        <div className="flex justify-between tabular">
+          <span className="text-muted">LAUNCH</span>
+          <span>{MISSION.launchDate}</span>
+        </div>
+        <div className="flex justify-between tabular">
+          <span className="text-muted">WINDOW</span>
+          <span>L-92 &rarr; R+194</span>
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <div className="min-h-screen flex relative z-10">
+      {/* Desktop sidebar - static, always visible md+ */}
       <motion.aside
         initial={{ x: -20, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="w-60 shrink-0 border-r border-line bg-panel/80 backdrop-blur-sm flex flex-col"
+        className="hidden md:flex w-60 shrink-0 border-r border-line bg-panel/80 backdrop-blur-sm flex-col"
       >
-        <Link to="/" className="px-4 py-4 border-b border-line flex items-center gap-2.5 hover:bg-panel-raised/50 transition-colors">
-          <Insignia />
-          <div>
-            <div className="text-[10px] tracking-widest text-faint uppercase font-display">Mission Health</div>
-            <div className="text-[15px] font-display font-semibold text-ink leading-tight">Command Center</div>
-          </div>
-        </Link>
-        <nav className="flex-1 py-3">
-          <NavItem to="/dashboard" icon={Activity} label="Crew Overview" />
-          <NavItem to="/insights" icon={TrendingUp} label="Insights" />
-          <NavItem to="/about" icon={Info} label="Data & Methods" />
-        </nav>
-        <div className="px-4 py-3 border-t border-line text-[11px] text-faint space-y-1">
-          <div className="flex justify-between tabular">
-            <span className="text-muted">MISSION</span>
-            <span className="text-ink">{MISSION.name.replace("SpaceX ", "")}</span>
-          </div>
-          <div className="flex justify-between tabular">
-            <span className="text-muted">LAUNCH</span>
-            <span>{MISSION.launchDate}</span>
-          </div>
-          <div className="flex justify-between tabular">
-            <span className="text-muted">WINDOW</span>
-            <span>L-92 &rarr; R+194</span>
-          </div>
-        </div>
+        {sidebarContent}
       </motion.aside>
 
+      {/* Mobile drawer - overlay + slide-in panel */}
+      <AnimatePresence>
+        {navOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setNavOpen(false)}
+              className="md:hidden fixed inset-0 bg-navy/70 backdrop-blur-sm z-40"
+            />
+            <motion.aside
+              initial={{ x: -260 }}
+              animate={{ x: 0 }}
+              exit={{ x: -260 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="md:hidden fixed top-0 left-0 bottom-0 w-64 max-w-[80vw] border-r border-line bg-panel flex flex-col z-50"
+              style={{ paddingTop: "env(safe-area-inset-top, 0px)", paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+            >
+              <div className="flex justify-end px-3 pt-2">
+                <button onClick={() => setNavOpen(false)} className="p-2 text-muted hover:text-ink" aria-label="Close menu">
+                  <X size={18} />
+                </button>
+              </div>
+              {sidebarContent}
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+
       <div className="flex-1 flex flex-col min-w-0">
+        {/* Mobile top bar */}
+        <div
+          className="md:hidden flex items-center gap-3 px-4 py-3 border-b border-line bg-panel/90 backdrop-blur-sm sticky top-0 z-30"
+          style={{ paddingTop: "calc(0.75rem + env(safe-area-inset-top, 0px))" }}
+        >
+          <button onClick={() => setNavOpen(true)} className="p-1.5 -ml-1.5 text-ink" aria-label="Open menu">
+            <Menu size={20} />
+          </button>
+          <Insignia />
+          <div className="text-[14px] font-display font-semibold text-ink leading-tight">Command Center</div>
+        </div>
+
         <motion.div
           initial={{ y: -8, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.4 }}
-          className="bg-status-normal/10 border-b border-status-normal/30 text-status-normal text-[11px] tracking-wide px-4 py-1.5 text-center font-display flex items-center justify-center gap-2"
+          className="bg-status-normal/10 border-b border-status-normal/30 text-status-normal text-[10px] sm:text-[11px] tracking-wide px-3 sm:px-4 py-1.5 text-center font-display flex items-center justify-center gap-2"
         >
-          <span className="w-1.5 h-1.5 rounded-full bg-status-normal animate-pulse" />
-          REAL NASA OSDR DATA &middot; INSPIRATION4 (OSD-569, OSD-575) &middot; SEE ABOUT THIS DATA
+          <span className="w-1.5 h-1.5 rounded-full bg-status-normal animate-pulse shrink-0" />
+          <span className="truncate">
+            <span className="hidden sm:inline">REAL NASA OSDR DATA &middot; INSPIRATION4 (OSD-569, OSD-575) &middot; SEE ABOUT THIS DATA</span>
+            <span className="sm:hidden">REAL NASA OSDR DATA</span>
+          </span>
         </motion.div>
         <main className="flex-1 overflow-y-auto">
           <AnimatePresence mode="wait">

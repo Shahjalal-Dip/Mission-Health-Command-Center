@@ -38,8 +38,8 @@ function crewSparkline(crewId) {
 
 export default function Dashboard() {
   return (
-    <div className="px-8 py-7 max-w-5xl">
-      <div className="mb-6 flex items-start justify-between gap-8">
+    <div className="px-4 sm:px-6 md:px-8 py-5 md:py-7 max-w-5xl">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-8">
         <div>
           <div className="flex items-center gap-2 mb-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-status-normal animate-pulse" />
@@ -47,12 +47,12 @@ export default function Dashboard() {
               {MISSION.dataSource}
             </span>
           </div>
-          <h1 className="text-[26px] leading-tight font-display font-semibold text-ink">
+          <h1 className="text-[22px] md:text-[26px] leading-tight font-display font-semibold text-ink">
             {MISSION.name}
           </h1>
           <p className="text-sm text-muted mt-1.5 max-w-xl leading-relaxed">{MISSION.summary}</p>
         </div>
-        <div className="text-right shrink-0">
+        <div className="text-left sm:text-right shrink-0">
           <div className="text-[10px] uppercase tracking-widest text-faint font-display mb-1">
             System Status
           </div>
@@ -63,7 +63,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-3 mb-7">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3 mb-6 md:mb-7">
         <div className="bracket bg-panel border border-line p-3.5">
           <div className="flex items-center justify-between mb-1.5">
             <Users size={15} className="text-accent" />
@@ -102,7 +102,7 @@ export default function Dashboard() {
         Crew Roster &middot; {CREW.length} Subjects
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {CREW.map((member, i) => {
           const summary = crewSummary(member.id, flagged);
           const Icon = STATUS_ICON[summary.status];
@@ -126,9 +126,11 @@ export default function Dashboard() {
                     <div className="text-xs text-faint">{member.role}</div>
                   </div>
                 </div>
-                <div className="flex items-center gap-5">
-                  <Sparkline values={crewSparkline(member.id)} color={SPARK_COLOR[summary.status]} />
-                  <div className="text-right min-w-[80px]">
+                <div className="flex items-center gap-3 sm:gap-5">
+                  <div className="hidden sm:block">
+                    <Sparkline values={crewSparkline(member.id)} color={SPARK_COLOR[summary.status]} />
+                  </div>
+                  <div className="text-right min-w-[70px] sm:min-w-[80px]">
                     <div className="text-xs tabular text-faint">
                       {summary.flaggedCount > 0 && (
                         <span className="text-status-flagged">{summary.flaggedCount} flagged</span>

@@ -23,7 +23,7 @@ const fadeUp = {
 
 export default function Briefing() {
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 py-12 relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 py-10 sm:py-12 relative overflow-hidden">
       {/* Ambient glow behind hero */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full pointer-events-none"
@@ -74,7 +74,7 @@ export default function Briefing() {
           <motion.h1
             variants={fadeUp}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[34px] leading-tight font-display font-semibold text-ink mb-3"
+            className="text-[26px] sm:text-[34px] leading-tight font-display font-semibold text-ink mb-3"
           >
             Mission Health<br />Command Center
           </motion.h1>
@@ -94,12 +94,12 @@ export default function Briefing() {
         <motion.div
           variants={fadeUp}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="bracket bg-panel/90 backdrop-blur-sm border border-line p-5 mb-6"
+          className="bracket bg-panel/90 backdrop-blur-sm border border-line p-4 sm:p-5 mb-6"
         >
           <div className="text-[10px] tracking-widest text-faint uppercase font-display mb-3">
             Built on real data, not simulation
           </div>
-          <div className="grid grid-cols-4 gap-3 mb-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-3 mb-4">
             {STATS.map((s, i) => (
               <motion.div
                 key={s.label}
@@ -124,7 +124,7 @@ export default function Briefing() {
         <motion.div
           variants={fadeUp}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="flex items-center justify-center gap-3"
+          className="flex flex-wrap items-center justify-center gap-3 px-2"
         >
           <Link to="/dashboard">
             <motion.span

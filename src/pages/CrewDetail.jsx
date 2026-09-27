@@ -51,7 +51,7 @@ export default function CrewDetail() {
   const flaggedForCrew = flagged.filter((r) => r.crewId === crewId && r.severity !== "normal");
 
   return (
-    <div className="px-8 py-7 max-w-5xl">
+    <div className="px-4 sm:px-6 md:px-8 py-5 md:py-7 max-w-5xl">
       <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-xs text-muted hover:text-accent transition-colors mb-5">
         <ArrowLeft size={14} /> Crew Overview
       </Link>
@@ -62,7 +62,7 @@ export default function CrewDetail() {
         transition={{ duration: 0.4 }}
         className="flex items-baseline gap-3 mb-6"
       >
-        <h1 className="text-[28px] font-display font-semibold text-ink tabular tracking-wide">{member.id}</h1>
+        <h1 className="text-[24px] md:text-[28px] font-display font-semibold text-ink tabular tracking-wide">{member.id}</h1>
         <span className="text-xs text-faint clip-tag bg-panel-raised border border-line px-2.5 py-1">{member.role}</span>
       </motion.div>
 
@@ -93,9 +93,9 @@ export default function CrewDetail() {
         })}
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
         {/* Chart */}
-        <div className="bracket col-span-2 bg-panel border border-line p-5 overflow-hidden">
+        <div className="bracket lg:col-span-2 bg-panel border border-line p-4 sm:p-5 overflow-hidden">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeMetricId}
@@ -114,7 +114,7 @@ export default function CrewDetail() {
                 <div className="text-xs text-faint tabular">{activeMetric.unit}</div>
               </div>
               <div className="text-xs text-muted mb-4 leading-relaxed">{activeMetric.description}</div>
-              <ResponsiveContainer width="100%" height={260}>
+              <ResponsiveContainer width="100%" height={220} className="sm:!h-[260px]">
                 <LineChart data={chartData} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
                   <CartesianGrid stroke="#263153" strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="timepoint" tick={{ fill: "#8b96b3", fontSize: 12, fontFamily: "IBM Plex Mono" }} axisLine={{ stroke: "#263153" }} tickLine={false} />
@@ -148,7 +148,7 @@ export default function CrewDetail() {
         </div>
 
         {/* Timepoint readout + flags */}
-        <div className="bracket bg-panel border border-line p-5">
+        <div className="bracket bg-panel border border-line p-4 sm:p-5">
           <div className="text-[10px] tracking-widest text-faint uppercase font-display mb-3">Readings by Timepoint</div>
           <div className="space-y-2">
             <AnimatePresence mode="wait">
