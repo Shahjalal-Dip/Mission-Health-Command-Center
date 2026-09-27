@@ -66,7 +66,7 @@ export default function Insights() {
         </div>
         <p className="text-xs text-muted mb-5 max-w-2xl leading-relaxed">
           For each biomarker, how many days after landing each subject's reading returned to
-          within 20% of their own pre-flight baseline &mdash; and stayed there. Computed directly
+          within 20% of their own pre-flight baseline and stayed there. Computed directly
           from the 4 real subjects across the observed R+1 to R+194 window. No projection beyond
           what was actually measured.
         </p>
@@ -80,7 +80,7 @@ export default function Insights() {
           (Glucose, Sodium) reached the recovery threshold earlier and more consistently across
           subjects, while immune markers (Lymphocytes, IL-6) took longer and were less
           consistent. This pattern is descriptive of these 4 subjects and should not be
-          generalized to spaceflight recovery broadly &mdash; though it is directionally
+          generalized to spaceflight recovery broadly though it is directionally
           consistent with published spaceflight immunology research on longer-lasting immune
           changes post-flight.
         </p>

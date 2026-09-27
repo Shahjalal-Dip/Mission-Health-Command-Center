@@ -26,4 +26,4 @@ export const MISSION_DURATION_CONTEXT = [
 ];
 
 export const CONTEXT_DISCLAIMER =
-  "These figures describe general spaceflight research findings for longer-duration missions and are shown for mission-planning context only. They are not derived from, or applied to, the Inspiration4 biomarker data shown elsewhere in this app \u2014 our source panels (CBC, metabolic panel, cytokine panel) do not measure bone density or muscle mass.";
+  "These figures describe general spaceflight research findings for longer-duration missions and are shown for mission-planning context only. They are not derived from, or applied to, the Inspiration4 biomarker data shown elsewhere in this app our source panels (CBC, metabolic panel, cytokine panel) do not measure bone density or muscle mass.";
