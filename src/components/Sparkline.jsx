@@ -1,3 +1,5 @@
+import { motion } from "framer-motion";
+
 export default function Sparkline({ values, width = 72, height = 24, color = "var(--color-accent)" }) {
   const clean = values.filter((v) => v != null);
   if (clean.length < 2) return <div style={{ width, height }} />;
@@ -20,8 +22,27 @@ export default function Sparkline({ values, width = 72, height = 24, color = "va
 
   return (
     <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="overflow-visible">
-      <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" opacity="0.85" />
-      <circle cx={lastX} cy={lastY} r="2" fill={color} />
+      <motion.polyline
+        points={points}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+        strokeLinecap="round"
+        opacity="0.85"
+        initial={{ pathLength: 0 }}
+        animate={{ pathLength: 1 }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+      />
+      <motion.circle
+        cx={lastX}
+        cy={lastY}
+        r="2"
+        fill={color}
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.3, delay: 1 }}
+      />
     </svg>
   );
 }

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, AlertTriangle, Eye } from "lucide-react";
 import {
   LineChart,
@@ -55,12 +56,17 @@ export default function CrewDetail() {
         <ArrowLeft size={14} /> Crew Overview
       </Link>
 
-      <div className="flex items-baseline gap-3 mb-6">
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="flex items-baseline gap-3 mb-6"
+      >
         <h1 className="text-[28px] font-display font-semibold text-ink tabular tracking-wide">{member.id}</h1>
         <span className="text-xs text-faint clip-tag bg-panel-raised border border-line px-2.5 py-1">{member.role}</span>
-      </div>
+      </motion.div>
 
-      {/* Metric selector - clipped-corner chips, color-coded by category */}
+      {/* Metric selector - clipped-corner chips with a sliding active indicator */}
       <div className="flex flex-wrap gap-2 mb-5">
         {METRICS.map((m) => {
           const active = m.id === activeMetricId;
@@ -68,13 +74,20 @@ export default function CrewDetail() {
             <button
               key={m.id}
               onClick={() => setActiveMetricId(m.id)}
-              className={`clip-tag px-3.5 py-2 text-xs font-medium border transition-colors ${
+              className={`relative clip-tag px-3.5 py-2 text-xs font-medium border transition-colors overflow-hidden ${
                 active
-                  ? "bg-accent/15 border-accent text-accent"
+                  ? "border-accent text-accent"
                   : "bg-panel border-line text-muted hover:text-ink hover:border-line-bright"
               }`}
             >
-              {m.shortName}
+              {active && (
+                <motion.span
+                  layoutId="metric-tab-bg"
+                  className="absolute inset-0 bg-accent/15"
+                  transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                />
+              )}
+              <span className="relative">{m.shortName}</span>
             </button>
           );
         })}
@@ -82,61 +95,78 @@ export default function CrewDetail() {
 
       <div className="grid grid-cols-3 gap-6">
         {/* Chart */}
-        <div className="bracket col-span-2 bg-panel border border-line p-5">
-          <div className="flex items-baseline justify-between mb-1">
-            <div className="flex items-center gap-2">
-              <div className="text-sm font-display font-semibold text-ink">{activeMetric.name}</div>
-              <span className={`clip-tag text-[10px] px-1.5 py-0.5 border ${CATEGORY_COLOR[activeMetric.category] ?? ""}`}>
-                {activeMetric.category}
-              </span>
-            </div>
-            <div className="text-xs text-faint tabular">{activeMetric.unit}</div>
-          </div>
-          <div className="text-xs text-muted mb-4 leading-relaxed">{activeMetric.description}</div>
-          <ResponsiveContainer width="100%" height={260}>
-            <LineChart data={chartData} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
-              <CartesianGrid stroke="#263153" strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="timepoint" tick={{ fill: "#8b96b3", fontSize: 12, fontFamily: "IBM Plex Mono" }} axisLine={{ stroke: "#263153" }} tickLine={false} />
-              <YAxis tick={{ fill: "#8b96b3", fontSize: 12, fontFamily: "IBM Plex Mono" }} axisLine={{ stroke: "#263153" }} tickLine={false} width={40} />
-              {hasRange && <ReferenceLine y={sampleRow.rangeMin} stroke="#566089" strokeDasharray="2 4" />}
-              {hasRange && <ReferenceLine y={sampleRow.rangeMax} stroke="#566089" strokeDasharray="2 4" />}
-              <Tooltip
-                contentStyle={{ background: "#182036", border: "1px solid #3a4872", borderRadius: 0, fontSize: 12, fontFamily: "IBM Plex Mono" }}
-                labelStyle={{ color: "#eef1f7" }}
-              />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="#e8a33d"
-                strokeWidth={2}
-                dot={{ r: 4, fill: "#0a0f1a", stroke: "#e8a33d", strokeWidth: 2 }}
-                activeDot={{ r: 5 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-          <div className="text-xs text-faint mt-1">
-            {hasRange
-              ? `Dashed lines mark the Quest Diagnostics reference range for this draw (${sampleRow.rangeMin}\u2013${sampleRow.rangeMax} ${activeMetric.unit}).`
-              : "No established clinical reference range for this research-use marker \u2014 assessed by deviation from baseline only."}
-          </div>
+        <div className="bracket col-span-2 bg-panel border border-line p-5 overflow-hidden">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeMetricId}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.25 }}
+            >
+              <div className="flex items-baseline justify-between mb-1">
+                <div className="flex items-center gap-2">
+                  <div className="text-sm font-display font-semibold text-ink">{activeMetric.name}</div>
+                  <span className={`clip-tag text-[10px] px-1.5 py-0.5 border ${CATEGORY_COLOR[activeMetric.category] ?? ""}`}>
+                    {activeMetric.category}
+                  </span>
+                </div>
+                <div className="text-xs text-faint tabular">{activeMetric.unit}</div>
+              </div>
+              <div className="text-xs text-muted mb-4 leading-relaxed">{activeMetric.description}</div>
+              <ResponsiveContainer width="100%" height={260}>
+                <LineChart data={chartData} margin={{ top: 8, right: 12, left: -12, bottom: 0 }}>
+                  <CartesianGrid stroke="#263153" strokeDasharray="3 3" vertical={false} />
+                  <XAxis dataKey="timepoint" tick={{ fill: "#8b96b3", fontSize: 12, fontFamily: "IBM Plex Mono" }} axisLine={{ stroke: "#263153" }} tickLine={false} />
+                  <YAxis tick={{ fill: "#8b96b3", fontSize: 12, fontFamily: "IBM Plex Mono" }} axisLine={{ stroke: "#263153" }} tickLine={false} width={40} />
+                  {hasRange && <ReferenceLine y={sampleRow.rangeMin} stroke="#566089" strokeDasharray="2 4" />}
+                  {hasRange && <ReferenceLine y={sampleRow.rangeMax} stroke="#566089" strokeDasharray="2 4" />}
+                  <Tooltip
+                    contentStyle={{ background: "#182036", border: "1px solid #3a4872", borderRadius: 0, fontSize: 12, fontFamily: "IBM Plex Mono" }}
+                    labelStyle={{ color: "#eef1f7" }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#e8a33d"
+                    strokeWidth={2}
+                    dot={{ r: 4, fill: "#0a0f1a", stroke: "#e8a33d", strokeWidth: 2 }}
+                    activeDot={{ r: 5 }}
+                    isAnimationActive={true}
+                    animationDuration={700}
+                    animationEasing="ease-out"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+              <div className="text-xs text-faint mt-1">
+                {hasRange
+                  ? `Dashed lines mark the Quest Diagnostics reference range for this draw (${sampleRow.rangeMin}\u2013${sampleRow.rangeMax} ${activeMetric.unit}).`
+                  : "No established clinical reference range for this research-use marker \u2014 assessed by deviation from baseline only."}
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* Timepoint readout + flags */}
         <div className="bracket bg-panel border border-line p-5">
           <div className="text-[10px] tracking-widest text-faint uppercase font-display mb-3">Readings by Timepoint</div>
           <div className="space-y-2">
-            {chartData.map((d) => (
-              <div key={d.timepoint} className="flex items-center justify-between text-sm">
-                <div className="flex items-center gap-2">
-                  <span className={`w-1.5 h-1.5 rounded-full ${SEVERITY_DOT[d.row?.severity ?? "normal"]}`} />
-                  <span className="text-muted tabular text-xs">{d.timepoint}</span>
-                  {d.row?.dataNote && (
-                    <span title={d.row.dataNote} className="text-status-watch text-xs cursor-help">&#9888;</span>
-                  )}
-                </div>
-                <span className="tabular text-ink">{d.value ?? "\u2014"}</span>
-              </div>
-            ))}
+            <AnimatePresence mode="wait">
+              <motion.div key={activeMetricId} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="space-y-2">
+                {chartData.map((d) => (
+                  <div key={d.timepoint} className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <span className={`w-1.5 h-1.5 rounded-full ${SEVERITY_DOT[d.row?.severity ?? "normal"]}`} />
+                      <span className="text-muted tabular text-xs">{d.timepoint}</span>
+                      {d.row?.dataNote && (
+                        <span title={d.row.dataNote} className="text-status-watch text-xs cursor-help">&#9888;</span>
+                      )}
+                    </div>
+                    <span className="tabular text-ink">{d.value ?? "\u2014"}</span>
+                  </div>
+                ))}
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
       </div>
@@ -154,8 +184,11 @@ export default function CrewDetail() {
               const metric = METRICS.find((m) => m.id === r.metricId);
               const Icon = r.severity === "flagged" ? AlertTriangle : Eye;
               return (
-                <div
+                <motion.div
                   key={i}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: i * 0.04 }}
                   className={`flex gap-3 p-3 bg-panel border border-line border-l-[3px] ${
                     r.severity === "flagged" ? "border-l-status-flagged" : "border-l-status-watch"
                   }`}
@@ -169,7 +202,7 @@ export default function CrewDetail() {
                     <span className="text-faint tabular"> &middot; {r.timepointId}</span>
                     <div className="text-muted mt-0.5 leading-relaxed">{r.explanation}</div>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>

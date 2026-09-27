@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { ChevronRight, AlertTriangle, Eye, CheckCircle2, Users, Database, ShieldAlert } from "lucide-react";
 import { CREW, MISSION, TIMEPOINTS } from "../data/mission";
 import { REAL_READINGS } from "../data/readings.real";
@@ -6,6 +7,7 @@ import { buildFlaggedReadings } from "../lib/flagging";
 import { crewSummary, STATUS_LABEL } from "../lib/crewStatus";
 import Sparkline from "../components/Sparkline";
 import MissionTimeline from "../components/MissionTimeline";
+import CountUp from "../components/CountUp";
 
 const flagged = buildFlaggedReadings(REAL_READINGS);
 const totalFlagged = flagged.filter((r) => r.severity === "flagged").length;
@@ -67,28 +69,28 @@ export default function Dashboard() {
             <Users size={15} className="text-accent" />
             <span className="text-[9px] tracking-widest text-faint uppercase">Crew</span>
           </div>
-          <div className="text-xl font-display font-semibold text-ink tabular">{CREW.length}</div>
+          <div className="text-xl font-display font-semibold text-ink tabular"><CountUp value={CREW.length} duration={1} /></div>
         </div>
         <div className="bracket bg-panel border border-line p-3.5">
           <div className="flex items-center justify-between mb-1.5">
             <Database size={15} className="text-accent" />
             <span className="text-[9px] tracking-widest text-faint uppercase">Readings</span>
           </div>
-          <div className="text-xl font-display font-semibold text-ink tabular">{REAL_READINGS.length}</div>
+          <div className="text-xl font-display font-semibold text-ink tabular"><CountUp value={REAL_READINGS.length} duration={1.4} /></div>
         </div>
         <div className="bracket bg-panel border border-line p-3.5">
           <div className="flex items-center justify-between mb-1.5">
             <Eye size={15} className="text-status-watch" />
             <span className="text-[9px] tracking-widest text-faint uppercase">Watch</span>
           </div>
-          <div className="text-xl font-display font-semibold text-status-watch tabular">{totalWatch}</div>
+          <div className="text-xl font-display font-semibold text-status-watch tabular"><CountUp value={totalWatch} duration={1.2} /></div>
         </div>
         <div className="bracket bg-panel border border-line p-3.5">
           <div className="flex items-center justify-between mb-1.5">
             <ShieldAlert size={15} className="text-status-flagged" />
             <span className="text-[9px] tracking-widest text-faint uppercase">Flagged</span>
           </div>
-          <div className="text-xl font-display font-semibold text-status-flagged tabular">{totalFlagged}</div>
+          <div className="text-xl font-display font-semibold text-status-flagged tabular"><CountUp value={totalFlagged} duration={1.2} /></div>
         </div>
       </div>
 
@@ -101,43 +103,49 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-2 gap-3">
-        {CREW.map((member) => {
+        {CREW.map((member, i) => {
           const summary = crewSummary(member.id, flagged);
           const Icon = STATUS_ICON[summary.status];
           return (
-            <Link
+            <motion.div
               key={member.id}
-              to={`/crew/${member.id}`}
-              className={`bracket group flex items-center justify-between bg-panel border border-line border-l-[3px] pl-4 pr-4 py-4 hover:bg-panel-raised hover:border-line-bright transition-colors ${BORDER_CLASS[summary.status]}`}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="flex items-center gap-3.5">
-                <Icon size={18} strokeWidth={2} className={ICON_CLASS[summary.status]} />
-                <div>
-                  <div className="text-sm font-display font-semibold text-ink tabular tracking-wide">
-                    {member.id}
-                  </div>
-                  <div className="text-xs text-faint">{member.role}</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-5">
-                <Sparkline values={crewSparkline(member.id)} color={SPARK_COLOR[summary.status]} />
-                <div className="text-right min-w-[80px]">
-                  <div className="text-xs tabular text-faint">
-                    {summary.flaggedCount > 0 && (
-                      <span className="text-status-flagged">{summary.flaggedCount} flagged</span>
-                    )}
-                    {summary.flaggedCount > 0 && summary.watchCount > 0 && " \u00b7 "}
-                    {summary.watchCount > 0 && (
-                      <span className="text-status-watch">{summary.watchCount} watch</span>
-                    )}
-                    {summary.flaggedCount === 0 && summary.watchCount === 0 && (
-                      <span>{STATUS_LABEL[summary.status]}</span>
-                    )}
+              <Link
+                to={`/crew/${member.id}`}
+                className={`bracket group flex items-center justify-between bg-panel border border-line border-l-[3px] pl-4 pr-4 py-4 hover:bg-panel-raised hover:border-line-bright transition-colors ${BORDER_CLASS[summary.status]}`}
+              >
+                <div className="flex items-center gap-3.5">
+                  <Icon size={18} strokeWidth={2} className={ICON_CLASS[summary.status]} />
+                  <div>
+                    <div className="text-sm font-display font-semibold text-ink tabular tracking-wide">
+                      {member.id}
+                    </div>
+                    <div className="text-xs text-faint">{member.role}</div>
                   </div>
                 </div>
-                <ChevronRight size={16} className="text-faint group-hover:text-accent transition-colors" />
-              </div>
-            </Link>
+                <div className="flex items-center gap-5">
+                  <Sparkline values={crewSparkline(member.id)} color={SPARK_COLOR[summary.status]} />
+                  <div className="text-right min-w-[80px]">
+                    <div className="text-xs tabular text-faint">
+                      {summary.flaggedCount > 0 && (
+                        <span className="text-status-flagged">{summary.flaggedCount} flagged</span>
+                      )}
+                      {summary.flaggedCount > 0 && summary.watchCount > 0 && " \u00b7 "}
+                      {summary.watchCount > 0 && (
+                        <span className="text-status-watch">{summary.watchCount} watch</span>
+                      )}
+                      {summary.flaggedCount === 0 && summary.watchCount === 0 && (
+                        <span>{STATUS_LABEL[summary.status]}</span>
+                      )}
+                    </div>
+                  </div>
+                  <ChevronRight size={16} className="text-faint group-hover:text-accent group-hover:translate-x-0.5 transition-all" />
+                </div>
+              </Link>
+            </motion.div>
           );
         })}
       </div>

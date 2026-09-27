@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import { ExternalLink, TrendingUp, BookOpen } from "lucide-react";
 import { METRICS, METRIC_MAP } from "../data/metrics";
 import { CREW } from "../data/mission";
@@ -10,7 +11,7 @@ const summary = summarizeRecoveryByMetric(recovery);
 
 const MAX_DAY = 194;
 
-function RecoveryBar({ row }) {
+function RecoveryBar({ row, rowIndex }) {
   const metric = METRIC_MAP[row.metricId];
   return (
     <div className="mb-5">
@@ -23,15 +24,17 @@ function RecoveryBar({ row }) {
         </div>
       </div>
       <div className="space-y-1.5">
-        {row.rows.map((r) => {
+        {row.rows.map((r, i) => {
           const pct = r.recovered ? Math.min(100, (r.daysToRecover / MAX_DAY) * 100) : 100;
           return (
             <div key={r.crewId} className="flex items-center gap-2">
               <span className="text-xs text-faint tabular w-10 shrink-0">{r.crewId}</span>
-              <div className="flex-1 h-2 bg-panel-raised relative">
-                <div
+              <div className="flex-1 h-2 bg-panel-raised relative overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${pct}%` }}
+                  transition={{ duration: 0.8, delay: 0.15 + rowIndex * 0.08 + i * 0.04, ease: [0.16, 1, 0.3, 1] }}
                   className={`h-full ${r.recovered ? "bg-status-normal" : "bg-status-flagged/60"}`}
-                  style={{ width: `${pct}%` }}
                 />
               </div>
               <span className="text-xs text-muted tabular w-24 shrink-0 text-right">
@@ -68,8 +71,8 @@ export default function Insights() {
           what was actually measured.
         </p>
         <div className="bracket bg-panel border border-line p-5">
-          {summary.map((row) => (
-            <RecoveryBar key={row.metricId} row={row} />
+          {summary.map((row, i) => (
+            <RecoveryBar key={row.metricId} row={row} rowIndex={i} />
           ))}
         </div>
         <p className="text-xs text-faint mt-3 max-w-2xl leading-relaxed">
@@ -92,8 +95,14 @@ export default function Insights() {
         </div>
         <p className="text-xs text-muted mb-5 max-w-2xl leading-relaxed">{CONTEXT_DISCLAIMER}</p>
         <div className="grid grid-cols-2 gap-3">
-          {MISSION_DURATION_CONTEXT.map((c) => (
-            <div key={c.id} className="bracket bg-panel border border-line p-4">
+          {MISSION_DURATION_CONTEXT.map((c, i) => (
+            <motion.div
+              key={c.id}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.1 }}
+              className="bracket bg-panel border border-line p-4"
+            >
               <div className="text-sm font-medium text-ink mb-0.5">{c.title}</div>
               <div className="text-lg font-semibold text-accent mb-2 tabular">{c.stat}</div>
               <p className="text-xs text-muted leading-relaxed mb-3">{c.body}</p>
@@ -105,7 +114,7 @@ export default function Insights() {
               >
                 <ExternalLink size={11} /> {c.source}
               </a>
-            </div>
+            </motion.div>
           ))}
         </div>
       </section>
