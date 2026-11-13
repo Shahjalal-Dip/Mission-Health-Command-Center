@@ -1,11 +1,17 @@
 import { Link } from "react-router-dom";
-import { ChevronRight, AlertTriangle, Eye, CheckCircle2 } from "lucide-react";
-import { CREW, MISSION } from "../data/mission";
+import { motion } from "framer-motion";
+import { ChevronRight, AlertTriangle, Eye, CheckCircle2, Users, Database, ShieldAlert } from "lucide-react";
+import { CREW, MISSION, TIMEPOINTS } from "../data/mission";
 import { REAL_READINGS } from "../data/readings.real";
 import { buildFlaggedReadings } from "../lib/flagging";
 import { crewSummary, STATUS_LABEL } from "../lib/crewStatus";
+import Sparkline from "../components/Sparkline";
+import MissionTimeline from "../components/MissionTimeline";
+import CountUp from "../components/CountUp";
 
 const flagged = buildFlaggedReadings(REAL_READINGS);
+const totalFlagged = flagged.filter((r) => r.severity === "flagged").length;
+const totalWatch = flagged.filter((r) => r.severity === "watch").length;
 
 const STATUS_ICON = { normal: CheckCircle2, watch: Eye, flagged: AlertTriangle };
 const BORDER_CLASS = {
@@ -18,59 +24,139 @@ const ICON_CLASS = {
   watch: "text-status-watch",
   flagged: "text-status-flagged",
 };
+const SPARK_COLOR = {
+  normal: "var(--color-status-normal)",
+  watch: "var(--color-status-watch)",
+  flagged: "var(--color-status-flagged)",
+};
+
+function crewSparkline(crewId) {
+  return TIMEPOINTS.map(
+    (tp) => flagged.find((r) => r.crewId === crewId && r.metricId === "wbc" && r.timepointId === tp.id)?.value ?? null
+  );
+}
 
 export default function Dashboard() {
   return (
-    <div className="px-8 py-7 max-w-5xl">
-      <div className="mb-8">
-        <div className="text-xs uppercase tracking-wide text-faint mb-1.5">{MISSION.dataSource}</div>
-        <h1 className="text-2xl font-semibold text-ink">{MISSION.name} &mdash; Crew Overview</h1>
-        <p className="text-sm text-muted mt-1.5 max-w-2xl leading-relaxed">{MISSION.summary}</p>
+    <div className="px-4 sm:px-6 md:px-8 py-5 md:py-7 max-w-5xl">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-8">
+        <div>
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-status-normal animate-pulse" />
+            <span className="text-[10px] tracking-widest text-accent uppercase font-display">
+              {MISSION.dataSource}
+            </span>
+          </div>
+          <h1 className="text-[22px] md:text-[26px] leading-tight font-display font-semibold text-ink">
+            {MISSION.name}
+          </h1>
+          <p className="text-sm text-muted mt-1.5 max-w-xl leading-relaxed">{MISSION.summary}</p>
+        </div>
+        <div className="text-left sm:text-right shrink-0">
+          <div className="text-[10px] uppercase tracking-widest text-faint font-display mb-1">
+            System Status
+          </div>
+          <div className="flex items-center justify-end gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-status-normal" />
+            <span className="text-xs text-status-normal font-display tracking-wide">DATA ONLINE</span>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        {CREW.map((member) => {
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3 mb-6 md:mb-7">
+        <div className="bracket bg-panel border border-line p-3.5">
+          <div className="flex items-center justify-between mb-1.5">
+            <Users size={15} className="text-accent" />
+            <span className="text-[9px] tracking-widest text-faint uppercase">Crew</span>
+          </div>
+          <div className="text-xl font-display font-semibold text-ink tabular"><CountUp value={CREW.length} duration={1} /></div>
+        </div>
+        <div className="bracket bg-panel border border-line p-3.5">
+          <div className="flex items-center justify-between mb-1.5">
+            <Database size={15} className="text-accent" />
+            <span className="text-[9px] tracking-widest text-faint uppercase">Readings</span>
+          </div>
+          <div className="text-xl font-display font-semibold text-ink tabular"><CountUp value={REAL_READINGS.length} duration={1.4} /></div>
+        </div>
+        <div className="bracket bg-panel border border-line p-3.5">
+          <div className="flex items-center justify-between mb-1.5">
+            <Eye size={15} className="text-status-watch" />
+            <span className="text-[9px] tracking-widest text-faint uppercase">Watch</span>
+          </div>
+          <div className="text-xl font-display font-semibold text-status-watch tabular"><CountUp value={totalWatch} duration={1.2} /></div>
+        </div>
+        <div className="bracket bg-panel border border-line p-3.5">
+          <div className="flex items-center justify-between mb-1.5">
+            <ShieldAlert size={15} className="text-status-flagged" />
+            <span className="text-[9px] tracking-widest text-faint uppercase">Flagged</span>
+          </div>
+          <div className="text-xl font-display font-semibold text-status-flagged tabular"><CountUp value={totalFlagged} duration={1.2} /></div>
+        </div>
+      </div>
+
+      <div className="mb-7">
+        <MissionTimeline />
+      </div>
+
+      <div className="text-[10px] tracking-widest text-faint uppercase font-display mb-3">
+        Crew Roster &middot; {CREW.length} Subjects
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {CREW.map((member, i) => {
           const summary = crewSummary(member.id, flagged);
           const Icon = STATUS_ICON[summary.status];
           return (
-            <Link
+            <motion.div
               key={member.id}
-              to={`/crew/${member.id}`}
-              className={`group flex items-center justify-between bg-panel border border-line border-l-[3px] pl-4 pr-3 py-4 hover:bg-panel-raised transition-colors ${BORDER_CLASS[summary.status]}`}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
             >
-              <div className="flex items-center gap-3.5">
-                <Icon size={20} strokeWidth={2} className={ICON_CLASS[summary.status]} />
-                <div>
-                  <div className="text-sm font-medium text-ink">{member.name}</div>
-                  <div className="text-xs text-muted">{member.role}</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <div className="text-xs tabular text-faint">
-                    {summary.flaggedCount > 0 && (
-                      <span className="text-status-flagged">{summary.flaggedCount} flagged</span>
-                    )}
-                    {summary.flaggedCount > 0 && summary.watchCount > 0 && " \u00b7 "}
-                    {summary.watchCount > 0 && (
-                      <span className="text-status-watch">{summary.watchCount} watch</span>
-                    )}
-                    {summary.flaggedCount === 0 && summary.watchCount === 0 && (
-                      <span>{STATUS_LABEL[summary.status]}</span>
-                    )}
+              <Link
+                to={`/crew/${member.id}`}
+                className={`bracket group flex items-center justify-between bg-panel border border-line border-l-[3px] pl-4 pr-4 py-4 hover:bg-panel-raised hover:border-line-bright transition-colors ${BORDER_CLASS[summary.status]}`}
+              >
+                <div className="flex items-center gap-3.5">
+                  <Icon size={18} strokeWidth={2} className={ICON_CLASS[summary.status]} />
+                  <div>
+                    <div className="text-sm font-display font-semibold text-ink tabular tracking-wide">
+                      {member.id}
+                    </div>
+                    <div className="text-xs text-faint">{member.role}</div>
                   </div>
                 </div>
-                <ChevronRight size={16} className="text-faint group-hover:text-muted" />
-              </div>
-            </Link>
+                <div className="flex items-center gap-3 sm:gap-5">
+                  <div className="hidden sm:block">
+                    <Sparkline values={crewSparkline(member.id)} color={SPARK_COLOR[summary.status]} />
+                  </div>
+                  <div className="text-right min-w-[70px] sm:min-w-[80px]">
+                    <div className="text-xs tabular text-faint">
+                      {summary.flaggedCount > 0 && (
+                        <span className="text-status-flagged">{summary.flaggedCount} flagged</span>
+                      )}
+                      {summary.flaggedCount > 0 && summary.watchCount > 0 && " \u00b7 "}
+                      {summary.watchCount > 0 && (
+                        <span className="text-status-watch">{summary.watchCount} watch</span>
+                      )}
+                      {summary.flaggedCount === 0 && summary.watchCount === 0 && (
+                        <span>{STATUS_LABEL[summary.status]}</span>
+                      )}
+                    </div>
+                  </div>
+                  <ChevronRight size={16} className="text-faint group-hover:text-accent group-hover:translate-x-0.5 transition-all" />
+                </div>
+              </Link>
+            </motion.div>
           );
         })}
       </div>
 
       <div className="mt-8 text-xs text-faint leading-relaxed max-w-2xl">
         Status reflects deviation from each crew member&apos;s own pre-flight baseline across
-        tracked biomarkers, with standard clinical reference ranges shown as secondary context.
-        This is a decision-support signal, not a medical diagnosis.
+        tracked biomarkers, with lab-reported clinical reference ranges shown as secondary
+        context. This is a decision-support signal, not a medical diagnosis. WBC trend shown
+        above per subject.
       </div>
     </div>
   );
