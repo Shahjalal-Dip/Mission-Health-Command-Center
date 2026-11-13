@@ -6,14 +6,9 @@
 // Keyed as `${crewId}|${metricId}|${timepointId}`.
 export const DATA_NOTES = {
   "C003|platelets|L-92": {
-    note: "Possible data artifact: 12.9 (range 140\u2013400) is clinically implausible for a routine pre-flight screening. Value shown exactly as published in OSDR OSD-569; not altered. Excluded from this subject's baseline average (see About This Data) because including it skews baseline math for every other timepoint.",
-    excludeFromBaseline: true,
+    note: "Possible data artifact: 12.9 (range 140\u2013400) is clinically implausible for a routine pre-flight screening. Value shown exactly as published in OSDR OSD-569; not altered or excluded.",
   },
 };
-
-export function isExcludedFromBaseline(crewId, metricId, timepointId) {
-  return !!DATA_NOTES[`${crewId}|${metricId}|${timepointId}`]?.excludeFromBaseline;
-}
 
 export function getDataNote(crewId, metricId, timepointId) {
   return DATA_NOTES[`${crewId}|${metricId}|${timepointId}`]?.note ?? null;
