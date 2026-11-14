@@ -283,7 +283,6 @@ Potential future development includes:
 Shah Jalal Dip
 
 - GitHub: https://github.com/Shahjalal-Dip
-- Portfolio: https://shahjalaldip.vercel.app/
 
 Developed for **NASA Space Apps Challenge 2026**.
 
