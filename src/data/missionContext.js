@@ -19,8 +19,8 @@ export const MISSION_DURATION_CONTEXT = [
     id: "muscle",
     title: "Muscle mass",
     stat: "Up to 20% loss in 5\u201311 days",
-    body: "NASA-affiliated research indicates astronauts can lose up to 20% of muscle mass on missions of just 5\u201311 days, with losses up to 30% on longer missions, primarily in anti-gravity muscles (calves, quadriceps, back).",
-    source: "NASA-affiliated spaceflight muscle atrophy research",
+    body: "Published spaceflight research, as reported by the University of Liverpool, indicates astronauts can lose up to 20% of muscle mass on missions of just 5\u201311 days, with losses up to 30% on longer missions, primarily in anti-gravity muscles (calves, quadriceps, back).",
+    source: "University of Liverpool news release on spaceflight muscle loss research",
     sourceUrl: "https://news.liverpool.ac.uk/?p=102224",
   },
 ];
